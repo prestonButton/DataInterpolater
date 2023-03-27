@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input, button {
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+button {
+    width: fit-content;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+#result {
+    margin-top: 4rem;
+    white-space: pre-wrap;
+}
