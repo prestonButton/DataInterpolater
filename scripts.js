@@ -76,7 +76,7 @@ function createCSVDownload(data, fileName) {
 function createTrendlineSVG(data, fileName) {
   const svgWidth = 800;
   const svgHeight = 400;
-  const padding = 40;
+  const padding = 0;
 
   const maxValue = Math.max(...data) || 1;
   const xScale = (index) =>
