@@ -84,9 +84,9 @@ function createTrendlineSVG(data, fileName) {
   const yScale = (value) =>
     svgHeight - padding - (value / maxValue) * (svgHeight - 2 * padding);
 
-  const polylinePoints = data
+  const pathPoints = data
     .map((value, index) => `${xScale(index)},${yScale(value)}`)
-    .join(" ");
+    .join(" L ");
 
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("width", svgWidth);
@@ -97,11 +97,15 @@ function createTrendlineSVG(data, fileName) {
     "http://www.w3.org/2000/svg",
     "linearGradient"
   );
+
+  const y1 = 100 * (padding / svgHeight);
+  const y2 = 100 * ((svgHeight - padding) / svgHeight);
+
   gradient.setAttribute("id", "gradient");
   gradient.setAttribute("x1", "0%");
-  gradient.setAttribute("y1", "0%");
+  gradient.setAttribute("y1", `${y1}%`);
   gradient.setAttribute("x2", "0%");
-  gradient.setAttribute("y2", "100%");
+  gradient.setAttribute("y2", `${y2}%`);
 
   const stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
   stop1.setAttribute("offset", "0%");
@@ -118,30 +122,21 @@ function createTrendlineSVG(data, fileName) {
   defs.appendChild(gradient);
   svg.appendChild(defs);
 
-  const polyline = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "polyline"
-  );
-  polyline.setAttribute("points", polylinePoints);
-  polyline.setAttribute("fill", "none");
-  polyline.setAttribute("stroke", "#272A32");
-  polyline.setAttribute("stroke-width", 3);
+  const fillPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  fillPath.setAttribute("d", `M ${padding},${svgHeight - padding} L ${pathPoints} L ${svgWidth - padding},${svgHeight - padding} Z`);
+  fillPath.setAttribute("fill", "url(#gradient)");
+  fillPath.setAttribute("stroke", "none");
 
-  svg.appendChild(polyline);
+  const strokePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  strokePath.setAttribute("d", `M ${pathPoints}`);
+  strokePath.setAttribute("fill", "none");
+  strokePath.setAttribute("stroke", "#272A32");
+  strokePath.setAttribute("stroke-width", 3);
+  strokePath.setAttribute("stroke-linejoin", "round");
+  strokePath.setAttribute("stroke-linecap", "round");
 
-  const polygonPoints =
-    polylinePoints +
-    ` ${svgWidth - padding},${svgHeight - padding} ${padding},${
-      svgHeight - padding
-    }`;
-  const polygon = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "polygon"
-  );
-  polygon.setAttribute("points", polygonPoints);
-  polygon.setAttribute("fill", "url(#gradient)");
-
-  svg.insertBefore(polygon, polyline);
+  svg.appendChild(fillPath);
+  svg.appendChild(strokePath);
 
   const existingSVG = document.getElementById("trendline-svg");
   if (existingSVG) {
