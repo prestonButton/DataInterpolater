@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dataInputValue = document.getElementById("data-input").value;
     const dataPoints = dataInputValue
-      .split('')
+      .split(' ')
       .map((point) => parseFloat(point.trim()))
       .filter((point) => !isNaN(point));
 
